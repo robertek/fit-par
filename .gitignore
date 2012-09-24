@@ -10,3 +10,12 @@
 *.lai
 *.la
 *.a
+
+# Cmake tmp
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake*
+
+# binary
+sop
