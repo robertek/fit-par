@@ -5,4 +5,4 @@ set (CMAKE_SUPPRESS_REGENERATION on)
 
 include_directories ("${PROJECT_BINARY_DIR}")
 
-add_executable (sop sop.c)
+add_executable (sop misc.c set.c sop.c)
