@@ -37,7 +37,7 @@ winner_set * construct_last_set( int sum, int num, int set, winner_set * previou
 	winner1 = construct_last_set( sum, num+1, set, winner1, last_set );
 
 	/* Include current number, but check if sum is <c */
-	if( sum + last_set->set[set].member[num] < input_c )
+	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
 	{
 		winner_set * winner2 = copy_winner( previous );
 		add_to_winner( winner2, set, last_set->set[set].member[num] );
@@ -109,7 +109,7 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
 
 	/* Include current number, but check if sum is <c */
-	if( sum + last_set->set[set].member[num] < input_c )
+	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
 	{
 		winner_set * winner2 = copy_winner( previous );
 		add_to_winner( winner2, set, last_set->set[set].member[num] );
