@@ -22,6 +22,7 @@
 #define MAX_N 100
 
 int input_n;
+int input_max;
 int input_S[MAX_N];
 int input_c;
 int input_a;

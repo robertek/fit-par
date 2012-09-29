@@ -32,6 +32,12 @@ winner_set * construct_last_set( int sum, int num, int set, winner_set * previou
 		return previous;
 	}
 
+	if( sum + last_set->result == input_max )
+	{
+		previous->result = sum + last_set->result;
+		return previous;
+	}
+
 	/* Dont include current number in set */
 	winner_set * winner1 = construct_last_set( sum, num+1, set, previous, last_set );
 
@@ -85,11 +91,10 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 		return help2;
 	}
 
-	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	/* Add number to second set */
-	add_to_winner( winner1, set+1, last_set->set[set].member[num] );
-	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
+	if( previous->result == input_max )
+	{
+		return previous;
+	}
 
 	/* Include current number, but check if sum is <c */
 	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
@@ -97,6 +102,12 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 		winner_set * winner2 = copy_winner( previous );
 		add_to_winner( winner2, set, last_set->set[set].member[num] );
 		winner2 = construct_next_set( sum + last_set->set[set].member[num], num+1, set, winner2, last_set );
+
+	/* Dont include current number in set */
+	winner_set * winner1 = copy_winner( previous );
+	/* Add number to second set */
+	add_to_winner( winner1, set+1, last_set->set[set].member[num] );
+	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
 
 		if( winner1->result > winner2->result )
 		{
@@ -113,6 +124,12 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 	}
 	else
 	{
+	/* Dont include current number in set */
+	winner_set * winner1 = copy_winner( previous );
+	/* Add number to second set */
+	add_to_winner( winner1, set+1, last_set->set[set].member[num] );
+	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
+
 		clean_winner( previous );
 		return winner1;
 	}

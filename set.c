@@ -83,11 +83,10 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 		return help2;
 	}
 
-	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	/* Add number to second set */
-	add_to_winner( winner1, 1, input_S[num] );
-	winner1 = construct_set( sum, num+1, winner1 );
+	if( previous->result == input_max )
+	{
+		return previous;
+	}
 
 	/* Include current number, but check if sum is <c */
 	if( sum + input_S[num] < input_c )
@@ -96,6 +95,12 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 		add_to_winner( winner2, 0, input_S[num] );
 
 		winner2 = construct_set( sum + input_S[num], num+1, winner2 );
+	/* Dont include current number in set */
+	winner_set * winner1 = copy_winner( previous );
+	/* Add number to second set */
+	add_to_winner( winner1, 1, input_S[num] );
+	winner1 = construct_set( sum, num+1, winner1 );
+
 
 		if( winner1->result > winner2->result )
 		{
@@ -112,6 +117,12 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 	}
 	else
 	{
+	/* Dont include current number in set */
+	winner_set * winner1 = copy_winner( previous );
+	/* Add number to second set */
+	add_to_winner( winner1, 1, input_S[num] );
+	winner1 = construct_set( sum, num+1, winner1 );
+
 		clean_winner( previous );
 		return winner1;
 	}
