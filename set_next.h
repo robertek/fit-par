@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  set.h
+ *       Filename:  set_next.h
  *
- *    Description:  header for set
+ *    Description:  set_next header
  *
  *        Version:  1.0
- *        Created:  28.9.2012 14:55:58
+ *        Created:  29.9.2012 18:17:36
  *       Revision:  1
  *       Compiler:  gcc
  *
@@ -16,15 +16,10 @@
  * =====================================================================================
  */
 
-#ifndef __set_h__
-#define __set_h__
+#ifndef __set_next_h__
+#define __set_next_h__
 
-winner_set * initial_winner( void );
-
-winner_set * copy_winner( winner_set* );
-
-void add_to_winner( winner_set*, int set, int number );
-
-winner_set * construct_set( int, int, winner_set * );
+winner_set * construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
+winner_set * construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
 
 #endif

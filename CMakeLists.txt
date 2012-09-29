@@ -6,4 +6,4 @@ set (CMAKE_C_FLAGS "-O0 -ggdb")
 
 include_directories ("${PROJECT_BINARY_DIR}")
 
-add_executable (sop misc.c set.c sop.c)
+add_executable (sop misc.c set.c sop.c set_next.c)

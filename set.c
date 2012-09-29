@@ -19,6 +19,7 @@
 
 #include "sop.h"
 #include "misc.h"
+#include "set_next.h"
 
 winner_set * initial_winner( void )
 {
@@ -66,11 +67,18 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 	if( num == input_n )
 	{
 		previous->result = sum;
-		//winner_set * help = copy_result(previous)
-		//help = construct_next_set( sum, 0, 1, help, previous );
-		previous->exists = 1;
-		//clean_winner( previous );
-		return previous;
+		winner_set * help = copy_winner( previous );
+		help->set[1].num = 0;
+		if( input_a == 2 )
+		{
+			help = construct_last_set( 0, 0, 1, help, previous );
+		}
+		else
+		{
+			help = construct_next_set( 0, 0, 1, help, previous );
+		}
+		clean_winner( previous );
+		return help;
 	}
 
 	/* Dont include current number in set */
