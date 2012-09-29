@@ -11,6 +11,9 @@
 *.la
 *.a
 
+# Vim swp
+*.swp
+
 # Cmake tmp
 CMakeCache.txt
 CMakeFiles

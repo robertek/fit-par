@@ -19,6 +19,8 @@
 #ifndef __set_h__
 #define __set_h__
 
-winner_set * construct_set( void );
+winner_set * initial_winner( void );
+
+winner_set * construct_set( int, int, winner_set * );
 
 #endif

@@ -21,6 +21,13 @@
 
 clean_winner( winner_set * winner )
 {
+	int i;
+	for( i=0 ; i<input_a ; i++ )
+	{
+		free( winner->set[i].member );
+	}
+	free( winner->set );
+	free( winner );
 	return;
 }
 

@@ -26,18 +26,10 @@ int input_S[MAX_N];
 int input_c;
 int input_a;
 
-struct set_member_struct
-{
-	int * value;
-	struct set_member_struct * next;
-};
-
-typedef struct set_member_struct set_member;
-
 typedef struct
 {
 	int num;
-	set_member * member;
+	int * member;
 } set_struct;
 
 typedef struct
