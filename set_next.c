@@ -33,51 +33,47 @@ winner_set * construct_last_set( int sum, int num, int set, winner_set * previou
 	}
 
 	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	winner1 = construct_last_set( sum, num+1, set, winner1, last_set );
+	winner_set * winner1 = construct_last_set( sum, num+1, set, previous, last_set );
 
 	/* Include current number, but check if sum is <c */
 	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
 	{
-		winner_set * winner2 = copy_winner( previous );
-		add_to_winner( winner2, set, last_set->set[set].member[num] );
-		winner2 = construct_last_set( sum + last_set->set[set].member[num], num+1, set, winner2, last_set );
+		winner_set * help = copy_winner( previous );
+		add_to_winner( help, set, last_set->set[set].member[num] );
+
+		winner_set * winner2 = construct_last_set( sum + last_set->set[set].member[num], num+1, set, help, last_set );
+
+		if( winner2 != help ) clean_winner( help );
 
 		if( winner1->exists && winner2->exists )
 			if( winner1->result > winner2->result )
 			{
-				clean_winner( previous );
 				clean_winner( winner2 );
 				return winner1;
 			}
 			else 
 			{
-				clean_winner( previous );
-				clean_winner( winner1 );
+				if( winner1 != previous ) clean_winner( winner1 );
 				return winner2;
 			}
 		else if( winner1->exists )
 		{
-			clean_winner( previous );
 			clean_winner( winner2 );
 			return winner1;
 		}
 		else if( winner2->exists )
 		{
-			clean_winner( previous );
-			clean_winner( winner1 );
+			if( winner1 != previous ) clean_winner( winner1 );
 			return winner2;
 		}
 		else
 		{
-			clean_winner( previous );
 			clean_winner( winner2 );
 			return winner1;
 		}
 	}
 	else
 	{
-		clean_winner( previous );
 		return winner1;
 	}
 }
@@ -89,17 +85,19 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 	{
 		previous->result += sum;
 		winner_set * help = copy_winner(previous);
+		winner_set * help2;
 		help->set[set+1].num = 0;
 		if( set == input_a-2 )
 		{
-			help = construct_last_set( 0, 0, set+1, help, previous );
+			help2 = construct_last_set( 0, 0, set+1, help, previous );
+			if( help2 != help ) clean_winner( help );
 		}
 		else
 		{
-			help = construct_next_set( 0, 0, set+1, help, previous );
+			help2 = construct_next_set( 0, 0, set+1, help, previous );
 		}
 		clean_winner( previous );
-		return help;
+		return help2;
 	}
 
 	/* Dont include current number in set */

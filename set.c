@@ -68,17 +68,19 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 	{
 		previous->result = sum;
 		winner_set * help = copy_winner( previous );
+		winner_set * help2;
 		help->set[1].num = 0;
 		if( input_a == 2 )
 		{
-			help = construct_last_set( 0, 0, 1, help, previous );
+			help2 = construct_last_set( 0, 0, 1, help, previous );
+			if( help2 != help ) clean_winner( help );
 		}
 		else
 		{
-			help = construct_next_set( 0, 0, 1, help, previous );
+			help2 = construct_next_set( 0, 0, 1, help, previous );
 		}
 		clean_winner( previous );
-		return help;
+		return help2;
 	}
 
 	/* Dont include current number in set */
