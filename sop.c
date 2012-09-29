@@ -40,7 +40,7 @@ int parse_input( void )
 void print_winner( winner_set * winner )
 {
 	int i,j;
-	if( winner->exists )
+	if( winner->result > 0 )
 	{
 		printf("Result = %ld\n", winner->result );
 

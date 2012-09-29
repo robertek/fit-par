@@ -34,7 +34,6 @@ typedef struct
 
 typedef struct
 {
-	int exists;
 	long result;
 	set_struct * set;
 } winner_set;

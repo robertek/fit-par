@@ -25,7 +25,6 @@ winner_set * initial_winner( void )
 {
 	winner_set * help = (winner_set*) malloc( sizeof(winner_set) );
 
-	help->exists = 0;
 	help->result = 0;
 	help->set = (set_struct*) malloc( input_a * sizeof(set_struct) );
 
@@ -66,6 +65,7 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 	/* All numbers done, do next set*/
 	if( num == input_n )
 	{
+		if( sum == 0 ) return previous;
 		previous->result = sum;
 		winner_set * help = copy_winner( previous );
 		winner_set * help2;
@@ -94,38 +94,20 @@ winner_set * construct_set( long sum, int num, winner_set * previous )
 	{
 		winner_set * winner2 = copy_winner( previous );
 		add_to_winner( winner2, 0, input_S[num] );
+
 		winner2 = construct_set( sum + input_S[num], num+1, winner2 );
 
-		if( winner1->exists && winner2->exists )
-			if( winner1->result > winner2->result )
-			{
-				clean_winner( previous );
-				clean_winner( winner2 );
-				return winner1;
-			}
-			else 
-			{
-				clean_winner( previous );
-				clean_winner( winner1 );
-				return winner2;
-			}
-		else if( winner1->exists )
+		if( winner1->result > winner2->result )
 		{
 			clean_winner( previous );
 			clean_winner( winner2 );
 			return winner1;
 		}
-		else if( winner2->exists )
+		else 
 		{
 			clean_winner( previous );
 			clean_winner( winner1 );
 			return winner2;
-		}
-		else
-		{
-			clean_winner( previous );
-			clean_winner( winner2 );
-			return winner1;
 		}
 	}
 	else

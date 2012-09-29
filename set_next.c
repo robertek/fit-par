@@ -27,8 +27,8 @@ winner_set * construct_last_set( int sum, int num, int set, winner_set * previou
 	/* All numbers done, do next set*/
 	if( num == last_set->set[set].num )
 	{
-		previous->result += sum;
-		previous->exists = 1;
+		if( sum == 0 ) return previous;
+		previous->result = sum + last_set->result;
 		return previous;
 	}
 
@@ -45,31 +45,15 @@ winner_set * construct_last_set( int sum, int num, int set, winner_set * previou
 
 		if( winner2 != help ) clean_winner( help );
 
-		if( winner1->exists && winner2->exists )
-			if( winner1->result > winner2->result )
-			{
-				clean_winner( winner2 );
-				return winner1;
-			}
-			else 
-			{
-				if( winner1 != previous ) clean_winner( winner1 );
-				return winner2;
-			}
-		else if( winner1->exists )
+		if( winner1->result > winner2->result )
 		{
 			clean_winner( winner2 );
 			return winner1;
 		}
-		else if( winner2->exists )
+		else 
 		{
 			if( winner1 != previous ) clean_winner( winner1 );
 			return winner2;
-		}
-		else
-		{
-			clean_winner( winner2 );
-			return winner1;
 		}
 	}
 	else
@@ -83,7 +67,8 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 	/* All numbers done, do next set*/
 	if( num == last_set->set[set].num )
 	{
-		previous->result += sum;
+		if( sum == 0 ) return previous;
+		previous->result = sum + last_set->result;
 		winner_set * help = copy_winner(previous);
 		winner_set * help2;
 		help->set[set+1].num = 0;
@@ -113,36 +98,17 @@ winner_set * construct_next_set( int sum, int num, int set, winner_set * previou
 		add_to_winner( winner2, set, last_set->set[set].member[num] );
 		winner2 = construct_next_set( sum + last_set->set[set].member[num], num+1, set, winner2, last_set );
 
-		if( winner1->exists && winner2->exists )
-			if( winner1->result > winner2->result )
-			{
-				clean_winner( previous );
-				clean_winner( winner2 );
-				return winner1;
-			}
-			else 
-			{
-				clean_winner( previous );
-				clean_winner( winner1 );
-				return winner2;
-			}
-		else if( winner1->exists )
+		if( winner1->result > winner2->result )
 		{
 			clean_winner( previous );
 			clean_winner( winner2 );
 			return winner1;
 		}
-		else if( winner2->exists )
+		else 
 		{
 			clean_winner( previous );
 			clean_winner( winner1 );
 			return winner2;
-		}
-		else
-		{
-			clean_winner( previous );
-			clean_winner( winner2 );
-			return winner1;
 		}
 	}
 	else
