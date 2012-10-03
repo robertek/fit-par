@@ -19,12 +19,13 @@
 #ifndef __set_h__
 #define __set_h__
 
-winner_set * initial_winner( void );
+inline winner_set * initial_winner( void );
 
-winner_set * copy_winner( winner_set* );
+inline winner_set * copy_winner( winner_set* );
 
-void add_to_winner( winner_set*, int set, int number );
+inline void add_to_winner( winner_set*, int set, int number );
+inline void del_from_winner( winner_set*, int set );
 
-winner_set * construct_set( int, int, winner_set * );
+int construct_set( int, int, winner_set * );
 
 #endif

@@ -21,7 +21,7 @@
 #include "misc.h"
 #include "set_next.h"
 
-winner_set * initial_winner( void )
+inline winner_set * initial_winner( void )
 {
 	winner_set * help = (winner_set*) malloc( sizeof(winner_set) );
 
@@ -37,7 +37,7 @@ winner_set * initial_winner( void )
 	return help;
 }
 
-winner_set * copy_winner( winner_set * previous )
+inline winner_set * copy_winner( winner_set * previous )
 {
 	winner_set * help = initial_winner(); 
 
@@ -55,77 +55,55 @@ winner_set * copy_winner( winner_set * previous )
 	return help;
 }
 
-void add_to_winner( winner_set * winner, int set, int number )
+inline void add_to_winner( winner_set * winner, int set, int number )
 {
 	winner->set[set].member[winner->set[set].num++] = number;
 }
 
-winner_set * construct_set( long sum, int num, winner_set * previous )
+inline void del_from_winner( winner_set * winner, int set  )
+{
+	winner->set[set].num--;
+}
+
+int construct_set( long sum, int num, winner_set * previous )
 {
 	/* All numbers done, do next set*/
 	if( num == input_n )
 	{
-		if( sum == 0 ) return previous;
+		if( sum == 0 ) return 0;
+
 		previous->result = sum;
 		winner_set * help = copy_winner( previous );
-		winner_set * help2;
 		help->set[1].num = 0;
 		if( input_a == 2 )
 		{
-			help2 = construct_last_set( 0, 0, 1, help, previous );
-			if( help2 != help ) clean_winner( help );
+			construct_last_set( 0, 0, 1, help, previous );
 		}
 		else
 		{
-			help2 = construct_next_set( 0, 0, 1, help, previous );
+			construct_next_set( 0, 0, 1, help, previous );
 		}
-		clean_winner( previous );
-		return help2;
+		clean_winner(help);
+		return 0;
 	}
 
-	if( previous->result == input_max )
-	{
-		return previous;
-	}
+	if( max_winner->result == input_max ) return 0;
 
 	/* Include current number, but check if sum is <c */
 	if( sum + input_S[num] < input_c )
 	{
-		winner_set * winner2 = copy_winner( previous );
-		add_to_winner( winner2, 0, input_S[num] );
-
-		winner2 = construct_set( sum + input_S[num], num+1, winner2 );
-	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	/* Add number to second set */
-	add_to_winner( winner1, 1, input_S[num] );
-	winner1 = construct_set( sum, num+1, winner1 );
-
-
-		if( winner1->result > winner2->result )
-		{
-			clean_winner( previous );
-			clean_winner( winner2 );
-			return winner1;
-		}
-		else 
-		{
-			clean_winner( previous );
-			clean_winner( winner1 );
-			return winner2;
-		}
+		add_to_winner( previous, 0, input_S[num] );
+		construct_set( sum + input_S[num], num+1, previous );
+		del_from_winner( previous, 0 );
 	}
-	else
-	{
-	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	/* Add number to second set */
-	add_to_winner( winner1, 1, input_S[num] );
-	winner1 = construct_set( sum, num+1, winner1 );
 
-		clean_winner( previous );
-		return winner1;
-	}
+	/* Dont include current number in set */
+	/* Add number to second set */
+	add_to_winner( previous, 1, input_S[num] );
+	construct_set( sum, num+1, previous );
+	del_from_winner( previous, 1 );
+
+	return 0;
 }
 
 /* vim: set ts=2 sw=2 :*/

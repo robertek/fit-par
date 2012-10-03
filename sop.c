@@ -61,13 +61,16 @@ void print_winner( winner_set * winner )
 
 int main( void )
 {
-  winner_set * winner;
-  if( parse_input() ) return 1;
+	if( parse_input() ) return 1;
 
-  winner = construct_set( 0, 0, initial_winner() );
+	max_winner = initial_winner();
 
-  print_winner( winner );
-  clean_winner( winner );
+	winner_set * help = initial_winner();
+	construct_set( 0, 0, help );
+	clean_winner( help );
+
+	print_winner( max_winner );
+	clean_winner( max_winner );
 
 	return 0;
 }

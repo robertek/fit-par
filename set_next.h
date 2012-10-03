@@ -19,7 +19,7 @@
 #ifndef __set_next_h__
 #define __set_next_h__
 
-winner_set * construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
-winner_set * construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
+int construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
+int construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
 
 #endif

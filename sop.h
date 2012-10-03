@@ -39,6 +39,8 @@ typedef struct
 	set_struct * set;
 } winner_set;
 
+winner_set * max_winner;
+
 #endif 
 
 /* vim: set ts=2 sw=2 :*/

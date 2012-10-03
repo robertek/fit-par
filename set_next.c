@@ -22,115 +22,74 @@
 #include "set.h"
 #include "misc.h"
 
-winner_set * construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set )
+int construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set )
 {
-	/* All numbers done, do next set*/
+	/* All numbers done */
 	if( num == last_set->set[set].num )
 	{
-		if( sum == 0 ) return previous;
 		previous->result = sum + last_set->result;
-		return previous;
+
+		if( previous->result > max_winner->result )
+		{
+			clean_winner( max_winner );
+			max_winner = copy_winner( previous );
+		}
+		return 0;
 	}
 
-	if( sum + last_set->result == input_max )
-	{
-		previous->result = sum + last_set->result;
-		return previous;
-	}
-
-	/* Dont include current number in set */
-	winner_set * winner1 = construct_last_set( sum, num+1, set, previous, last_set );
+	if( max_winner->result == input_max ) return 0;
 
 	/* Include current number, but check if sum is <c */
 	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
 	{
-		winner_set * help = copy_winner( previous );
-		add_to_winner( help, set, last_set->set[set].member[num] );
-
-		winner_set * winner2 = construct_last_set( sum + last_set->set[set].member[num], num+1, set, help, last_set );
-
-		if( winner2 != help ) clean_winner( help );
-
-		if( winner1->result > winner2->result )
-		{
-			clean_winner( winner2 );
-			return winner1;
-		}
-		else 
-		{
-			if( winner1 != previous ) clean_winner( winner1 );
-			return winner2;
-		}
+		add_to_winner( previous, set, last_set->set[set].member[num] );
+		construct_last_set( sum + last_set->set[set].member[num], num+1, set, previous, last_set );
+		del_from_winner( previous, set );
 	}
-	else
-	{
-		return winner1;
-	}
+
+	/* Dont include current number in set */
+	construct_last_set( sum, num+1, set, previous, last_set );
+
+	return 0;
 }
 
-winner_set * construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set )
+int construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set )
 {
 	/* All numbers done, do next set*/
 	if( num == last_set->set[set].num )
 	{
-		if( sum == 0 ) return previous;
+		if( sum == 0 ) return 0;
+
 		previous->result = sum + last_set->result;
 		winner_set * help = copy_winner(previous);
-		winner_set * help2;
 		help->set[set+1].num = 0;
 		if( set == input_a-2 )
 		{
-			help2 = construct_last_set( 0, 0, set+1, help, previous );
-			if( help2 != help ) clean_winner( help );
+			construct_last_set( 0, 0, set+1, help, previous );
 		}
 		else
 		{
-			help2 = construct_next_set( 0, 0, set+1, help, previous );
+			construct_next_set( 0, 0, set+1, help, previous );
 		}
-		clean_winner( previous );
-		return help2;
+		clean_winner( help );
+		return 0;
 	}
 
-	if( previous->result == input_max )
-	{
-		return previous;
-	}
+	if( max_winner->result == input_max ) return 0;
 
 	/* Include current number, but check if sum is <c */
 	if( sum + last_set->set[set].member[num] < input_c && previous->set[set].num < last_set->set[0].num )
 	{
-		winner_set * winner2 = copy_winner( previous );
-		add_to_winner( winner2, set, last_set->set[set].member[num] );
-		winner2 = construct_next_set( sum + last_set->set[set].member[num], num+1, set, winner2, last_set );
+		add_to_winner( previous, set, last_set->set[set].member[num] );
+		construct_next_set( sum + last_set->set[set].member[num], num+1, set, previous, last_set );
+		del_from_winner( previous, set );
+	}
 
 	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
 	/* Add number to second set */
-	add_to_winner( winner1, set+1, last_set->set[set].member[num] );
-	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
+	add_to_winner( previous, set+1, last_set->set[set].member[num] );
+	construct_next_set( sum, num+1, set, previous, last_set );
+	del_from_winner( previous, set+1 );
 
-		if( winner1->result > winner2->result )
-		{
-			clean_winner( previous );
-			clean_winner( winner2 );
-			return winner1;
-		}
-		else 
-		{
-			clean_winner( previous );
-			clean_winner( winner1 );
-			return winner2;
-		}
-	}
-	else
-	{
-	/* Dont include current number in set */
-	winner_set * winner1 = copy_winner( previous );
-	/* Add number to second set */
-	add_to_winner( winner1, set+1, last_set->set[set].member[num] );
-	winner1 = construct_next_set( sum, num+1, set, winner1, last_set );
-
-		clean_winner( previous );
-		return winner1;
-	}
+	return 0;
 }
