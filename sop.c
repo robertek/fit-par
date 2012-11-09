@@ -25,15 +25,16 @@
 int parse_input( void )
 {
 	int i;
+	int help;
 
-	scanf( "%d", &input_n );
-	//if( input_n < 20 ) return 1;
+	help = scanf( "%d", &input_n );
+	if( input_n < 20 ) return 1;
 
-	for( i=0 ; i<input_n ; i++ ) scanf( "%d", &input_S[i] );
+	for( i=0 ; i<input_n ; i++ ) help = scanf( "%d", &input_S[i] );
 
-	scanf( "%d", &input_c );
-	scanf( "%d", &input_a );
-	//if( input_a > 1 && input_a <= input_n/10 ) return 1;
+	help = scanf( "%d", &input_c );
+	help = scanf( "%d", &input_a );
+	if( input_a > 1 && input_a <= input_n/10 ) return 1;
 	input_max=input_a*(input_c-1);
 	return 0;
 }

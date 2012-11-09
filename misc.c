@@ -19,7 +19,7 @@
 
 #include "sop.h"
 
-clean_winner( winner_set * winner )
+void clean_winner( winner_set * winner )
 {
 	int i;
 	for( i=0 ; i<input_a ; i++ )

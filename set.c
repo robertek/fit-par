@@ -20,6 +20,7 @@
 #include "sop.h"
 #include "misc.h"
 #include "set_next.h"
+#include "stack.h"
 
 inline winner_set * initial_winner( void )
 {
