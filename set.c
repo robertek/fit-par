@@ -15,6 +15,8 @@
  *
  * =====================================================================================
  */
+#include <unistd.h>
+
 #include "sop.h"
 #include "misc.h"
 #include "set_next.h"
@@ -184,6 +186,9 @@ void recieve_max( void )
 	
 	while(--nr)
 	{
+		/* handle realy slow procs*/
+		MPI_Send( &nr, 1, MPI_INT, nr, WINNER_MAX, MPI_COMM_WORLD );
+
 		help = get_winner( nr, WINNER_MAX );
 		if( help->result > max_winner->result )
 		{
@@ -195,6 +200,18 @@ void recieve_max( void )
 			clean_winner( help );
 		}
 	}
+}
+
+int ask_for_stack( stack_struct * stack )
+{
+	int rank,nr;
+
+	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+	MPI_Comm_size( MPI_COMM_WORLD, &nr );
+
+	/* TODO */
+
+	return 1;
 }
 
 int construct_set_helper( stack_struct * stack ) 
@@ -235,8 +252,7 @@ int construct_set_helper( stack_struct * stack )
 		if( max_winner->result == input_max )
 		{
 			send_finish();
-			stack_destroy( stack );
-			return 0;
+			break;
 		}
 		
 		if( help->result + input_S[help->num] < input_c )
@@ -248,12 +264,9 @@ int construct_set_helper( stack_struct * stack )
 
 		add_to_winner( help, 1, input_S[help->num]);
 
-		if(stack_size(stack)>1) provide_stack( stack );
-		if( regular_listener() )
-		{
-			stack_destroy( stack );
-			return 0;
-		}
+		if( stack_size(stack)>1 ) provide_stack( stack );
+		if( regular_listener() ) break;
+		if( stack_size(stack)==0 && ask_for_stack( stack ) ) break ;
 	}
 
 	stack_destroy( stack );
@@ -280,8 +293,29 @@ int construct_set()
 
 int construct_set_others()
 {
+	MPI_Status status;
+	int flag;
+	winner_set * recived;
+
 	send_ask(0);
-	winner_set * recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND);
+	/* ugly but only affect start and solve realy fast execution and lot of procs */
+	while(1)
+	{
+		MPI_Iprobe( 0, WINNER_MAX, MPI_COMM_WORLD, &flag, &status );
+		if(flag)
+		{
+			send_max();
+			return 0;
+		}
+
+		MPI_Iprobe( 0, WINNER_SEND, MPI_COMM_WORLD, &flag, &status );
+		if(flag) 
+		{
+			recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND);
+			break;
+		}
+		usleep(10000);
+	}
 	
 	stack_struct * stack = stack_init();
 	stack_push( stack, recived );
