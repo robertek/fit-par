@@ -27,5 +27,6 @@ inline void add_to_winner( winner_set*, int set, int number );
 inline void del_from_winner( winner_set*, int set );
 
 int construct_set( void );
+int construct_set_others( void );
 
 #endif

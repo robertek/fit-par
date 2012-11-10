@@ -30,5 +30,5 @@ void stack_destroy( stack_struct * help );
 void stack_push( stack_struct * stack, winner_set * help );
 void stack_pop( stack_struct * stack );
 winner_set * stack_top( stack_struct * stack );
-int stack_notempty( stack_struct * stack );
+int stack_size( stack_struct * stack );
 winner_set * stack_bottom( stack_struct * stack );

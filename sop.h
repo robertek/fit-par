@@ -26,11 +26,17 @@
 
 #define MAX_N 100
 
+#define WINNER_ASK 1
+#define WINNER_SEND 2
+#define WINNER_FINISH 3
+#define WINNER_MAX 4
+
 int input_n;
 int input_max;
 int input_S[MAX_N];
 int input_c;
 int input_a;
+int winner_size;
 
 typedef struct
 {
@@ -40,7 +46,7 @@ typedef struct
 
 typedef struct
 {
-	long result;
+	int result;
 	int num;
 	set_struct * set;
 } winner_set;

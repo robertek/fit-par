@@ -33,7 +33,7 @@ void stack_destroy( stack_struct * help )
 {
 	if(help)
 	{
-		while(stack_notempty(help))
+		while(stack_size(help))
 		{
 			clean_winner(stack_top(help));
 			stack_pop(help);
@@ -59,7 +59,7 @@ winner_set * stack_top( stack_struct * stack )
 	return stack->array[stack->top];
 }
 
-int stack_notempty( stack_struct * stack )
+int stack_size( stack_struct * stack )
 {
 	return (stack->top - stack->bottom + 1)%STACK_SIZE;
 }
