@@ -15,8 +15,6 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
-
 #include "sop.h"
 
 void clean_winner( winner_set * winner )

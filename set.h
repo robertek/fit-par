@@ -26,6 +26,6 @@ inline winner_set * copy_winner( winner_set* );
 inline void add_to_winner( winner_set*, int set, int number );
 inline void del_from_winner( winner_set*, int set );
 
-int construct_set( int, int, winner_set * );
+int construct_set( void );
 
 #endif

@@ -19,6 +19,11 @@
 #ifndef __sop_h__
 #define __sop_h__
 
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <mpi.h>
+
 #define MAX_N 100
 
 int input_n;
@@ -36,6 +41,7 @@ typedef struct
 typedef struct
 {
 	long result;
+	int num;
 	set_struct * set;
 } winner_set;
 

@@ -15,9 +15,8 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
-
 #include "sop.h"
+#include "misc.h"
 #include "stack.h"
 
 
@@ -34,6 +33,11 @@ void stack_destroy( stack_struct * help )
 {
 	if(help)
 	{
+		while(stack_notempty(help))
+		{
+			clean_winner(stack_top(help));
+			stack_pop(help);
+		}
 		free(help->array);
 		free(help);
 	}

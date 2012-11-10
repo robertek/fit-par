@@ -15,27 +15,27 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "sop.h"
 #include "misc.h"
 #include "set.h"
 
-int parse_input( void )
+int parse_input( char * file )
 {
 	int i;
 	int help;
+	FILE * fd = fopen( file, "r");
 
-	help = scanf( "%d", &input_n );
-	if( input_n < 20 ) return 1;
+	help = fscanf( fd, "%d", &input_n );
+	//if( input_n < 20 ) return 1;
 
-	for( i=0 ; i<input_n ; i++ ) help = scanf( "%d", &input_S[i] );
+	for( i=0 ; i<input_n ; i++ ) help = fscanf( fd, "%d", &input_S[i] );
 
-	help = scanf( "%d", &input_c );
-	help = scanf( "%d", &input_a );
-	if( input_a > 1 && input_a <= input_n/10 ) return 1;
+	help = fscanf( fd, "%d", &input_c );
+	help = fscanf( fd, "%d", &input_a );
+	//if( input_a > 1 && input_a <= input_n/10 ) return 1;
 	input_max=input_a*(input_c-1);
+
+	fclose(fd);
 	return 0;
 }
 
@@ -60,15 +60,13 @@ void print_winner( winner_set * winner )
 		printf("No sets found.\n");
 }
 
-int main( void )
+int main( int argc, char ** argv )
 {
-	if( parse_input() ) return 1;
+	if( parse_input(argv[1]) ) return 1;
 
 	max_winner = initial_winner();
 
-	winner_set * help = initial_winner();
-	construct_set( 0, 0, help );
-	clean_winner( help );
+	construct_set();
 
 	print_winner( max_winner );
 	clean_winner( max_winner );

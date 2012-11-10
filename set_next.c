@@ -15,9 +15,6 @@
  *
  * =====================================================================================
  */
-#include <stdlib.h>
-#include <stdio.h>
-		
 #include "sop.h"
 #include "set.h"
 #include "misc.h"
