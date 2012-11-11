@@ -16,8 +16,8 @@
  * =====================================================================================
  */
 #include "sop.h"
-#include "misc.h"
 #include "stack.h"
+#include "set.h"
 
 
 stack_struct * stack_init()

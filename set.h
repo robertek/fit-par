@@ -20,6 +20,7 @@
 #define __set_h__
 
 inline winner_set * initial_winner( void );
+inline void clean_winner( winner_set * winner );
 
 inline winner_set * copy_winner( winner_set* );
 

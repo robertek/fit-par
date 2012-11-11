@@ -7,7 +7,7 @@ include_directories ("${PROJECT_BINARY_DIR}")
 #set (CMAKE_C_FLAGS "-march=native -O3 -pipe -floop-block -floop-strip-mine -floop-interchange -flto")
 set (CMAKE_C_FLAGS "-O0 -ggdb -Wall")
 
-add_executable (sop misc.c set.c sop.c set_next.c stack.c)
+add_executable (sop set.c sop.c set_next.c stack.c sop-mpi.c)
 
 # mpi
 find_package(MPI REQUIRED)

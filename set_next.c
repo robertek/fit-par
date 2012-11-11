@@ -17,7 +17,6 @@
  */
 #include "sop.h"
 #include "set.h"
-#include "misc.h"
 
 int construct_last_set( int sum, int num, int set, winner_set * previous, winner_set * last_set )
 {

@@ -16,7 +16,6 @@
  * =====================================================================================
  */
 #include "sop.h"
-#include "misc.h"
 #include "set.h"
 
 int parse_input( char * file )
