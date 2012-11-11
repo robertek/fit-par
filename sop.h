@@ -31,6 +31,10 @@
 #define WINNER_FINISH 3
 #define WINNER_MAX 4
 #define WINNER_DONOTHAVE 5
+#define PESEK 10
+
+#define WHITE 0
+#define BLACK 1
 
 int input_n;
 int input_max;
@@ -41,6 +45,7 @@ int winner_size;
 
 /* Dijkstra pesek color */
 int color;
+int have_pesek;
 
 typedef struct
 {

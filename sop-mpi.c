@@ -52,27 +52,6 @@ winner_set * unpack_winner( void * buffer )
 	return help;
 }
 
-void provide_stack( stack_struct * stack )
-{
-	MPI_Status status;
-	int flag,tmp;
-	void * packed;
-
-	while( stack_size(stack)>1 )
-	{
-		MPI_Iprobe( MPI_ANY_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &flag, &status );
-		if(flag)
-		{
-			MPI_Recv( &tmp, 1, MPI_CHAR, MPI_ANY_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &status);
-
-			packed = pack_winner(stack_bottom(stack));
-			MPI_Send( packed, winner_size, MPI_INT, status.MPI_SOURCE, WINNER_SEND, MPI_COMM_WORLD );
-			free(packed);
-		}
-		else return;
-	}
-}
-
 inline void send_finish( )
 {
 	char msg=0;
@@ -138,10 +117,33 @@ void recieve_max( void )
 	}
 }
 
+void provide_stack( stack_struct * stack )
+{
+	MPI_Status status;
+	int flag,tmp;
+	void * packed;
+
+	while( stack_size(stack)>1 )
+	{
+		MPI_Iprobe( MPI_ANY_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &flag, &status );
+		if(flag)
+		{
+			MPI_Recv( &tmp, 1, MPI_CHAR, MPI_ANY_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &status);
+
+			packed = pack_winner(stack_bottom(stack));
+			MPI_Send( packed, winner_size, MPI_INT, status.MPI_SOURCE, WINNER_SEND, MPI_COMM_WORLD );
+			free(packed);
+
+			color = BLACK;
+		}
+		else return;
+	}
+}
+
 int regular_listener( void )
 {
 	MPI_Status status;
-	int flag;
+	int flag,tmp;
 
 	MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
 	if(flag)
@@ -152,13 +154,23 @@ int regular_listener( void )
 			case WINNER_ASK :
 				MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
 				return 0;
+			case PESEK :
+				MPI_Recv( &tmp, 1, MPI_INT, MPI_ANY_SOURCE, PESEK, MPI_COMM_WORLD, &status);
+				have_pesek = 1;
+				return 0;
 		}
 	return 0;
 }
 
+void send_pesek( int proc )
+{
+	char msg=color;
+	MPI_Send( &msg, 1, MPI_CHAR, proc, PESEK, MPI_COMM_WORLD );
+}
+
 int ask_for_stack( stack_struct * stack )
 {
-	int rank,nr,flag;
+	int rank,nr,flag,tmp;
 	winner_set * recived;
 	MPI_Status status;
 
@@ -166,6 +178,24 @@ int ask_for_stack( stack_struct * stack )
 	MPI_Comm_size( MPI_COMM_WORLD, &nr );
 
 	if( nr == 1 ) return 1;  
+
+
+	if( rank == 0 )
+	{
+		color = WHITE;
+		send_pesek( 1 );
+		have_pesek = 0;
+	}
+	else
+	{
+		if( have_pesek )
+		{
+			send_pesek( (rank+1)%nr );
+			color=WHITE;
+			have_pesek = 0;
+		}
+
+	}
 
 	while(1)
 	{
@@ -184,10 +214,40 @@ int ask_for_stack( stack_struct * stack )
 						stack_push( stack, recived );
 						return 0;
 					case WINNER_DONOTHAVE :
+						MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD, &status);
 						break;
 					case WINNER_ASK :
+						MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &status);
 						MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
 						break;
+					case PESEK :
+						MPI_Recv( &tmp, 1, MPI_INT, MPI_ANY_SOURCE, PESEK, MPI_COMM_WORLD, &status);
+						have_pesek = 1;
+						break;
+				}
+
+			if( have_pesek )
+			{
+				if( rank == 0 )
+				{
+					if( tmp == WHITE )
+					{
+						send_finish();
+						return 1;
+					}
+					else
+					{
+						color = WHITE;
+						send_pesek( 1 );
+						have_pesek = 0;
+					}
+				}
+				else
+				{
+					send_pesek( (rank+1)%nr );
+					color=WHITE;
+					have_pesek = 0;
+				}
 			}
 		}
 	}

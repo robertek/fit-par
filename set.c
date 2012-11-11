@@ -100,6 +100,7 @@ int construct_set_helper( stack_struct * stack )
 				clean_winner(help);
 				if( stack_size(stack)>1 ) provide_stack( stack );
 				if( regular_listener() ) break;
+				if( ! stack_size(stack) && ask_for_stack( stack ) ) break ;
 				continue;
 			}
 
@@ -117,6 +118,7 @@ int construct_set_helper( stack_struct * stack )
 			clean_winner(help2);
 			if( stack_size(stack)>1 ) provide_stack( stack );
 			if( regular_listener() ) break;
+			if( ! stack_size(stack) && ask_for_stack( stack ) ) break ;
 			continue;
 		}
 
@@ -138,7 +140,7 @@ int construct_set_helper( stack_struct * stack )
 
 		if( stack_size(stack)>1 ) provide_stack( stack );
 		if( regular_listener() ) break;
-		if( stack_size(stack)==0 && ask_for_stack( stack ) ) break ;
+		if( ! stack_size(stack) && ask_for_stack( stack ) ) break ;
 	}
 
 	stack_destroy( stack );
