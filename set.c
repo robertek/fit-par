@@ -167,34 +167,12 @@ int construct_set()
 
 int construct_set_others()
 {
-	MPI_Status status;
-	int flag;
-	winner_set * recived;
-
-	send_ask(0);
-	/* ugly but only affect start and solve realy fast execution and lot of procs */
-	while(1)
-	{
-		MPI_Iprobe( 0, WINNER_MAX, MPI_COMM_WORLD, &flag, &status );
-		if(flag)
-		{
-			send_max();
-			return 0;
-		}
-
-		MPI_Iprobe( 0, WINNER_SEND, MPI_COMM_WORLD, &flag, &status );
-		if(flag) 
-		{
-			recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND);
-			break;
-		}
-		usleep(1000);
-	}
-	
 	stack_struct * stack = stack_init();
-	stack_push( stack, recived );
 
-	construct_set_helper( stack );
+	if( ! ask_for_stack( stack ) ) 
+		construct_set_helper( stack );
+	else
+		stack_destroy( stack );
 
 	send_max();
 

@@ -151,9 +151,6 @@ int regular_listener( void )
 		{
 			case WINNER_FINISH :
 				return 1;
-			case WINNER_ASK :
-				MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
-				return 0;
 			case PESEK :
 				MPI_Recv( &tmp, 1, MPI_INT, MPI_ANY_SOURCE, PESEK, MPI_COMM_WORLD, &status);
 				have_pesek = 1;
@@ -197,57 +194,55 @@ int ask_for_stack( stack_struct * stack )
 
 	}
 
+	send_ask( (rank+1)%nr );
+
 	while(1)
 	{
-		send_ask( (rank+1)%nr );
-
-		while(1)
-		{
-			MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
-			if(flag)
-				switch(status.MPI_TAG)
-				{
-					case WINNER_FINISH :
-						return 1;
-					case WINNER_SEND :
-						recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND );
-						stack_push( stack, recived );
-						return 0;
-					case WINNER_DONOTHAVE :
-						MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD, &status);
-						break;
-					case WINNER_ASK :
-						MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &status);
-						MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
-						break;
-					case PESEK :
-						MPI_Recv( &tmp, 1, MPI_INT, MPI_ANY_SOURCE, PESEK, MPI_COMM_WORLD, &status);
-						have_pesek = 1;
-						break;
-				}
-
-			if( have_pesek )
+		MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
+		if(flag)
+			switch(status.MPI_TAG)
 			{
-				if( rank == 0 )
+				case WINNER_FINISH :
+					return 1;
+				case WINNER_SEND :
+					recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND );
+					stack_push( stack, recived );
+					return 0;
+				case WINNER_DONOTHAVE :
+					MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD, &status);
+					send_ask( (rank+1)%nr );
+					break;
+				case WINNER_ASK :
+					MPI_Recv( &tmp, 1, MPI_INT, status.MPI_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &status);
+					MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
+					break;
+				case PESEK :
+					MPI_Recv( &tmp, 1, MPI_INT, MPI_ANY_SOURCE, PESEK, MPI_COMM_WORLD, &status);
+					have_pesek = 1;
+					break;
+			}
+
+		if( have_pesek )
+		{
+			if( rank == 0 )
+			{
+				if( tmp == WHITE )
 				{
-					if( tmp == WHITE )
-					{
-						send_finish();
-						return 1;
-					}
-					else
-					{
-						color = WHITE;
-						send_pesek( 1 );
-						have_pesek = 0;
-					}
+					send_finish();
+					return 1;
 				}
 				else
 				{
-					send_pesek( (rank+1)%nr );
-					color=WHITE;
+					color = WHITE;
+					send_pesek( 1 );
 					have_pesek = 0;
 				}
+			}
+			else
+			{
+				send_pesek( (rank+1)%nr );
+				color=WHITE;
+				have_pesek = 0;
 			}
 		}
 	}
