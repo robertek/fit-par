@@ -22,7 +22,7 @@
 #include "stack.h"
 #include "sop-mpi.h"
 
-inline winner_set * initial_winner( void )
+winner_set * initial_winner( void )
 {
 	winner_set * help = (winner_set*) malloc( sizeof(winner_set) );
 
@@ -39,7 +39,7 @@ inline winner_set * initial_winner( void )
 	return help;
 }
 
-inline void clean_winner( winner_set * winner )
+void clean_winner( winner_set * winner )
 {
 	int i;
 	for( i=0 ; i<input_a ; i++ )
@@ -51,7 +51,7 @@ inline void clean_winner( winner_set * winner )
 	return;
 }
 
-inline winner_set * copy_winner( winner_set * previous )
+winner_set * copy_winner( winner_set * previous )
 {
 	winner_set * help = initial_winner(); 
 

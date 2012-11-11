@@ -52,7 +52,7 @@ winner_set * unpack_winner( void * buffer )
 	return help;
 }
 
-inline void send_finish( )
+void send_finish( )
 {
 	char msg=0;
 	int rank,nr;
@@ -83,7 +83,7 @@ winner_set * get_winner( int source, int flag )
 	return unpack_winner( buffer );
 }
 		
-void send_max( void )
+inline void send_max( void )
 {
 	void * packed; 
 
@@ -159,7 +159,7 @@ int regular_listener( void )
 	return 0;
 }
 
-void send_pesek( int proc )
+inline void send_pesek( int proc )
 {
 	char msg=color;
 	MPI_Send( &msg, 1, MPI_CHAR, proc, PESEK, MPI_COMM_WORLD );

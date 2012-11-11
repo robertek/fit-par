@@ -19,10 +19,10 @@
 #ifndef __set_h__
 #define __set_h__
 
-inline winner_set * initial_winner( void );
-inline void clean_winner( winner_set * winner );
+winner_set * initial_winner( void );
+void clean_winner( winner_set * winner );
 
-inline winner_set * copy_winner( winner_set* );
+winner_set * copy_winner( winner_set* );
 
 inline void add_to_winner( winner_set*, int set, int number );
 inline void del_from_winner( winner_set*, int set );
