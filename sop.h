@@ -30,6 +30,7 @@
 #define WINNER_SEND 2
 #define WINNER_FINISH 3
 #define WINNER_MAX 4
+#define WINNER_DONOTHAVE 5
 
 int input_n;
 int input_max;
@@ -37,6 +38,9 @@ int input_S[MAX_N];
 int input_c;
 int input_a;
 int winner_size;
+
+/* Dijkstra pesek color */
+int color;
 
 typedef struct
 {

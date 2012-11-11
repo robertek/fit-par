@@ -75,7 +75,7 @@ void provide_stack( stack_struct * stack )
 
 inline void send_finish( )
 {
-	char msg=WINNER_FINISH;
+	char msg=0;
 	int rank,nr;
 	int i;
 
@@ -90,7 +90,7 @@ inline void send_finish( )
 
 inline void send_ask( int proc )
 {
-	char msg=WINNER_ASK;
+	char msg=color;
 	MPI_Send( &msg, 1, MPI_CHAR, proc, WINNER_ASK, MPI_COMM_WORLD );
 }
 
@@ -104,19 +104,6 @@ winner_set * get_winner( int source, int flag )
 	return unpack_winner( buffer );
 }
 		
-int regular_listener( void )
-{
-	MPI_Status status;
-	int flag;
-
-	MPI_Iprobe( MPI_ANY_SOURCE, WINNER_FINISH, MPI_COMM_WORLD, &flag, &status );
-	if(flag)
-	{
-		return 1;
-	}
-	return 0;
-}
-
 void send_max( void )
 {
 	void * packed; 
@@ -151,14 +138,59 @@ void recieve_max( void )
 	}
 }
 
+int regular_listener( void )
+{
+	MPI_Status status;
+	int flag;
+
+	MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
+	if(flag)
+		switch(status.MPI_TAG)
+		{
+			case WINNER_FINISH :
+				return 1;
+			case WINNER_ASK :
+				MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
+				return 0;
+		}
+	return 0;
+}
+
 int ask_for_stack( stack_struct * stack )
 {
-	int rank,nr;
+	int rank,nr,flag;
+	winner_set * recived;
+	MPI_Status status;
 
 	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 	MPI_Comm_size( MPI_COMM_WORLD, &nr );
 
-	/* TODO */
+	if( nr == 1 ) return 1;  
+
+	while(1)
+	{
+		send_ask( (rank+1)%nr );
+
+		while(1)
+		{
+			MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
+			if(flag)
+				switch(status.MPI_TAG)
+				{
+					case WINNER_FINISH :
+						return 1;
+					case WINNER_SEND :
+						recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND );
+						stack_push( stack, recived );
+						return 0;
+					case WINNER_DONOTHAVE :
+						break;
+					case WINNER_ASK :
+						MPI_Send( &flag, 1, MPI_INT, status.MPI_SOURCE, WINNER_DONOTHAVE, MPI_COMM_WORLD );
+						break;
+			}
+		}
+	}
 
 	return 1;
 }

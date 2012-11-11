@@ -65,6 +65,9 @@ int main( int argc, char ** argv )
 	int rank;
 	if( parse_input(argv[1]) ) return 1;
 
+	/* set initial color */
+	color = 0;
+
   MPI_Init( &argc, &argv );
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
