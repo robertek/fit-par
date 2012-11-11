@@ -51,7 +51,7 @@ void stack_push( stack_struct * stack, winner_set * help )
 
 void stack_pop( stack_struct * stack )
 {
-	stack->top = (stack->top-1)%STACK_SIZE;
+	stack->top = stack->top>0 ? stack->top-1: STACK_SIZE-1;
 }
 
 winner_set * stack_top( stack_struct * stack )
