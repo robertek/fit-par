@@ -21,21 +21,30 @@ target_link_libraries(sop ${MPI_LIBRARIES})
 enable_testing()
 
 add_test(test1 ./sop ../test/test1)
-add_test(test2 ./sop ../test/test2)
-add_test(test3 ./sop ../test/test3)
-add_test(test4 ./sop ../test/test4)
-add_test(test5 ./sop ../test/test5)
-add_test(test6 ./sop ../test/test6)
-add_test(test7 ./sop ../test/test7)
-add_test(test8 ./sop ../test/test8)
-add_test(test9 ./sop ../test/test9)
-
 add_test(mpi-test1 mpirun -n 2 ./sop ../test/test1)
+
+add_test(test2 ./sop ../test/test2)
 add_test(mpi-test2 mpirun -n 2 ./sop ../test/test2)
+
+add_test(test3 ./sop ../test/test3)
 add_test(mpi-test3 mpirun -n 2 ./sop ../test/test3)
+
+add_test(test4 ./sop ../test/test4)
 add_test(mpi-test4 mpirun -n 2 ./sop ../test/test4)
+
+add_test(test5 ./sop ../test/test5)
 add_test(mpi-test5 mpirun -n 2 ./sop ../test/test5)
+
+add_test(test6 ./sop ../test/test6)
 add_test(mpi-test6 mpirun -n 2 ./sop ../test/test6)
+
+add_test(test7 ./sop ../test/test7)
 add_test(mpi-test7 mpirun -n 2 ./sop ../test/test7)
+
+add_test(test8 ./sop ../test/test8)
 add_test(mpi-test8 mpirun -n 2 ./sop ../test/test8)
+
+add_test(test9 ./sop ../test/test9)
 add_test(mpi-test9 mpirun -n 2 ./sop ../test/test9)
+
+add_test(mpi-test10 mpirun -n 2 ./sop ../test/test10)

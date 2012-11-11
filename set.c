@@ -91,13 +91,15 @@ int construct_set_helper( stack_struct * stack )
 		help = stack_top( stack );
 
 		/* All numbers done, do next set*/
-		if( help->num == input_n - 1 )
+		if( help->num == input_n )
 		{
 			stack_pop( stack );
 
-			if( help->result == 0 )
+			if( help->result == 0 || help->set[1].num == 0 )
 			{
 				clean_winner(help);
+				if( stack_size(stack)>1 ) provide_stack( stack );
+				if( regular_listener() ) break;
 				continue;
 			}
 
@@ -113,6 +115,8 @@ int construct_set_helper( stack_struct * stack )
 			}
 			clean_winner(help);
 			clean_winner(help2);
+			if( stack_size(stack)>1 ) provide_stack( stack );
+			if( regular_listener() ) break;
 			continue;
 		}
 
@@ -182,7 +186,7 @@ int construct_set_others()
 			recived = get_winner( MPI_ANY_SOURCE, WINNER_SEND);
 			break;
 		}
-		usleep(10000);
+		usleep(1000);
 	}
 	
 	stack_struct * stack = stack_init();
