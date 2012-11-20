@@ -25,20 +25,28 @@ int parse_input( char * file )
 	FILE * fd = fopen( file, "r");
 
 	help = fscanf( fd, "%d", &input_n );
+	/* input constraint commented out for testing */
 	//if( input_n < 20 ) return 1;
 
 	for( i=0 ; i<input_n ; i++ ) help = fscanf( fd, "%d", &input_S[i] );
 
 	help = fscanf( fd, "%d", &input_c );
 	help = fscanf( fd, "%d", &input_a );
+	/* input constraint commented out for testing */
 	//if( input_a > 1 && input_a <= input_n/10 ) return 1;
+	
+	/* compute maximal sum */
 	input_max=input_a*(input_c-1);
+	/* compute size of set struct for mpi purposes */
 	winner_size = 2 + input_a*( 1 + input_n );
 
 	fclose(fd);
 	return 0;
 }
 
+/*
+ * print set on console
+ */
 void print_winner( winner_set * winner )
 {
 	int i,j;
@@ -74,6 +82,7 @@ int main( int argc, char ** argv )
 
 	max_winner = initial_winner();
 
+	/* divide work acoarding to rank, (set.c) */
 	if( rank == 0 )
 	{
 		construct_set();

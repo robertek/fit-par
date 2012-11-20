@@ -23,3 +23,5 @@ int construct_last_set( int sum, int num, int set, winner_set * previous, winner
 int construct_next_set( int sum, int num, int set, winner_set * previous, winner_set * last_set );
 
 #endif
+
+/* vim: set ts=2 sw=2 :*/

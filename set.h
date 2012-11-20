@@ -31,3 +31,5 @@ int construct_set( void );
 int construct_set_others( void );
 
 #endif
+
+/* vim: set ts=2 sw=2 :*/

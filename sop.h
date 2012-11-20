@@ -24,18 +24,22 @@
 
 #include <mpi.h>
 
+/* maximum input size */
 #define MAX_N 100
 
+/* mpi tag defines */
 #define WINNER_ASK 1
 #define WINNER_SEND 2
 #define WINNER_FINISH 3
 #define WINNER_MAX 4
 #define WINNER_DONOTHAVE 5
-#define PESEK 10
+#define PESEK 6
 
+/* colors for dijkstra peseks algorithm */
 #define WHITE 0
 #define BLACK 1
 
+/* global input variables */
 int input_n;
 int input_max;
 int input_S[MAX_N];
@@ -47,6 +51,7 @@ int winner_size;
 int color;
 int have_pesek;
 
+/* set structs  */
 typedef struct
 {
 	int num;
@@ -60,6 +65,7 @@ typedef struct
 	set_struct * set;
 } winner_set;
 
+/* global set with max sum */
 winner_set * max_winner;
 
 #endif 

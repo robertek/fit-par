@@ -3,15 +3,15 @@
  *
  *       Filename:  stack.c
  *
- *    Description:  easy stack implemenatation
+ *    Description:  Basic stack implementation
  *
  *        Version:  1.0
  *        Created:  25.10.2012 21:37:10
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *         Author:  Robert David (davidrob@fit.cvut.cz), Vaclav Sajdl (sajdlvac@fit.cvut.cz) 
+ *   Organization:  FIT
  *
  * =====================================================================================
  */
@@ -19,7 +19,9 @@
 #include "stack.h"
 #include "set.h"
 
-
+/*
+ * all functions are self explained by its name
+ */
 stack_struct * stack_init()
 {
 	stack_struct * help = (stack_struct*) malloc( sizeof(stack_struct) );
@@ -64,9 +66,15 @@ int stack_size( stack_struct * stack )
 	return (stack->top - stack->bottom + 1)%STACK_SIZE;
 }
 
+/*
+ * only one nonstandard stack function that return last stack item and delete it
+ * this is how stack division work for our sw
+ */
 winner_set * stack_bottom( stack_struct * stack )
 {
 	int help = stack->bottom;
 	stack->bottom = (stack->bottom+1)%STACK_SIZE;
 	return stack->array[help];
 }
+
+/* vim: set ts=2 sw=2 :*/

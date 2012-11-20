@@ -3,15 +3,15 @@
  *
  *       Filename:  sop-mpi.c
  *
- *    Description:  
+ *    Description:  mpi implementation helpers
  *
  *        Version:  1.0
  *        Created:  11/11/2012 10:46:12 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
- *         Author:  YOUR NAME (), 
- *   Organization:  
+ *         Author:  Robert David (davidrob@fit.cvut.cz), Vaclav Sajdl (sajdlvac@fit.cvut.cz) 
+ *   Organization:  FIT
  *
  * =====================================================================================
  */
@@ -19,6 +19,9 @@
 #include "set.h"
 #include "stack.h"
 
+/*
+ * flaten the data struct
+ */
 void * pack_winner( winner_set * winner )
 {
 	void * help = malloc( winner_size * sizeof(int) );
@@ -35,6 +38,9 @@ void * pack_winner( winner_set * winner )
 	return help;
 }
 
+/*
+ * parse data struct from flaten data
+ */
 winner_set * unpack_winner( void * buffer )
 {
 	winner_set * help = initial_winner();
@@ -52,6 +58,9 @@ winner_set * unpack_winner( void * buffer )
 	return help;
 }
 
+/*
+ * call finish to all other proceses
+ */
 void send_finish( )
 {
 	char msg=0;
@@ -67,12 +76,18 @@ void send_finish( )
 	}
 }
 
+/*
+ * send work asking message
+ */
 inline void send_ask( int proc )
 {
 	char msg=color;
 	MPI_Send( &msg, 1, MPI_CHAR, proc, WINNER_ASK, MPI_COMM_WORLD );
 }
 
+/*
+ * recieve computation data
+ */
 winner_set * get_winner( int source, int flag )
 {
 	MPI_Status status;
@@ -83,6 +98,9 @@ winner_set * get_winner( int source, int flag )
 	return unpack_winner( buffer );
 }
 		
+/*
+ * send computation data with max sum, only caled at the end
+ */
 inline void send_max( void )
 {
 	void * packed; 
@@ -92,6 +110,9 @@ inline void send_max( void )
 	free(packed);
 }
 
+/*
+ * collect all max data and set the maximal one
+ */
 void recieve_max( void )
 {
 	int nr;
@@ -117,12 +138,16 @@ void recieve_max( void )
 	}
 }
 
+/*
+ * provide our stack when whe have spare
+ */
 void provide_stack( stack_struct * stack )
 {
 	MPI_Status status;
 	int flag,tmp;
 	void * packed;
 
+	/* only provide spare stack items */
 	while( stack_size(stack)>1 )
 	{
 		MPI_Iprobe( MPI_ANY_SOURCE, WINNER_ASK, MPI_COMM_WORLD, &flag, &status );
@@ -140,6 +165,9 @@ void provide_stack( stack_struct * stack )
 	}
 }
 
+/*
+ * handler for special messages, this is done in evry cycle
+ */
 int regular_listener( void )
 {
 	MPI_Status status;
@@ -159,12 +187,18 @@ int regular_listener( void )
 	return 0;
 }
 
+/*
+ * self explanatory
+ */
 inline void send_pesek( int proc )
 {
 	char msg=color;
 	MPI_Send( &msg, 1, MPI_CHAR, proc, PESEK, MPI_COMM_WORLD );
 }
 
+/*
+ * ugly but functional dynamic work handler
+ */
 int ask_for_stack( stack_struct * stack )
 {
 	int rank,nr,flag,tmp;
@@ -174,9 +208,11 @@ int ask_for_stack( stack_struct * stack )
 	MPI_Comm_rank( MPI_COMM_WORLD, &rank );
 	MPI_Comm_size( MPI_COMM_WORLD, &nr );
 
+	/* do nothing if there is only one proc */
 	if( nr == 1 ) return 1;  
 
 
+	/* dijkstras pesek implemented exactly from the lectures */
 	if( rank == 0 )
 	{
 		color = WHITE;
@@ -191,15 +227,17 @@ int ask_for_stack( stack_struct * stack )
 			color=WHITE;
 			have_pesek = 0;
 		}
-
 	}
 
+	/* ask for work */
 	send_ask( (rank+1)%nr );
 
+	/* ugly,ugly active waiting for job */
 	while(1)
 	{
 		MPI_Iprobe( MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status );
 		if(flag)
+			/* check for all possible tags */
 			switch(status.MPI_TAG)
 			{
 				case WINNER_FINISH :
@@ -222,6 +260,7 @@ int ask_for_stack( stack_struct * stack )
 					break;
 			}
 
+		/* another peseks handler */
 		if( have_pesek )
 		{
 			if( rank == 0 )
@@ -249,3 +288,5 @@ int ask_for_stack( stack_struct * stack )
 
 	return 1;
 }
+
+/* vim: set ts=2 sw=2 :*/
