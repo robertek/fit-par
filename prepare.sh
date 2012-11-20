@@ -3,4 +3,18 @@
 rm -rf build
 mkdir build
 cd build
-cmake ..
+cmake .. >/dev/null
+
+cat << EOF
+
+Now enter ./build:
+$ cd build
+
+Building:
+$ make
+
+Testing:
+$ ctest
+$ ./sop ../test/testX
+
+EOF
